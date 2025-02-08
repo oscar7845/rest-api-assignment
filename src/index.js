@@ -29,6 +29,18 @@ app.post('/users', (req, res) => {
 });
   
 
+app.delete('/users/:id', (req, res) => {
+    const { id }=req.params;
+    const userIndex=users.findIndex(u => u.id===id);
+
+    if (userIndex === -1) {
+        return res.status(404).json({error: 'User not found'});
+    }
+    users.splice(userIndex, 1);
+    return res.sendStatus(204);
+});
+
+
 app.get('/', (req, res) => {
     res.send('Hello World!');
 });
