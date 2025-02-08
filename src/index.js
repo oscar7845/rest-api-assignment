@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const port = 3000;
+const {v4: uuidv4}=require('uuid');
 
 // Middleware to parse JSON bodies
 app.use(express.json());
@@ -8,6 +9,25 @@ app.use(express.json());
 // **************************************************************
 // Put your implementation here
 // If necessary to add imports, please do so in the section above
+const users = [];
+app.post('/users', (req, res) => {
+    const {name, email}=req.body;
+    
+    //check
+    if (!name || !email){
+        return res.status(400).json({error: 'Need name and email'});
+    }
+
+    const newUser={
+        id: uuidv4(),
+        name,
+        email,
+    };
+  
+    users.push(newUser);
+    return res.status(201).json(newUser);
+});
+  
 
 app.get('/', (req, res) => {
     res.send('Hello World!');
