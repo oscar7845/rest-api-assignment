@@ -12,27 +12,54 @@ app.use(express.json());
 const users = [];
 app.post('/users', (req, res) => {
     const {name, email}=req.body;
-    
-    //check
-    if (!name || !email){
-        return res.status(400).json({error: 'Need name and email'});
+  
+    if (!name || !email) {
+      return res.status(400).json({error: 'Need name and email'});
     }
-
-    const newUser={
+  
+    const newUser = {
         id: uuidv4(),
         name,
         email,
     };
-  
     users.push(newUser);
     return res.status(201).json(newUser);
 });
+
+app.get('/users/:id', (req, res) => {
+    const {id}=req.params;
   
+    const user=users.find((u) => u.id===id);
+  
+    if (!user){
+        return res.status(404).json({ error: 'User not found' });
+    }
+    return res.status(200).json(user);
+});
+  
+app.put('/users/:id', (req, res) => {
+    const {id}=req.params;
+    const {name, email}=req.body;
+  
+    if (!name || !email){
+        return res.status(400).json({error: 'Need name and email'});
+    }
+  
+    const user=users.find((u) => u.id===id);
+  
+    if (!user) {
+        return res.status(404).json({error: 'User not found'});
+    }
+  
+    user.name=name;
+    user.email=email;
+    return res.status(200).json(user);
+});
 
 app.delete('/users/:id', (req, res) => {
     const { id }=req.params;
-    const userIndex=users.findIndex(u => u.id===id);
-
+    const userIndex=users.findIndex((u) => u.id === id);
+  
     if (userIndex === -1) {
         return res.status(404).json({error: 'User not found'});
     }
